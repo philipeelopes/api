@@ -9,8 +9,14 @@ app.use(express.json())
 
 // CORS – permite apenas seu front
 app.use(cors({
-  origin: 'https://philipeelopes.github.io'
+  origin: [
+    'http://localhost:5173',
+    'http://localhost:5174',
+    'https://philipeelopes.github.io'
+  ]
 }))
+
+
 
 // Porta dinâmica (Render) ou local
 const PORT = process.env.PORT || 5000
@@ -23,17 +29,16 @@ app.get('/', (req, res) => {
 // CRIAR USUÁRIO
 app.post('/usuarios', async (req, res) => {
   try {
-    const { name, email, age } = req.body
-
     const user = await prisma.user.create({
       data: {
-        name,
-        email,
-        age: Number(age)
+        name: req.body.name,
+        email: req.body.email,
+        age: Number(req.body.age)
       }
     })
 
     res.status(201).json(user)
+
   } catch (error) {
     res.status(500).json({ error: 'Erro ao criar usuário' })
   }
